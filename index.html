@@ -22,14 +22,9 @@
             background-size: 200% 200%;
             animation: gradient 15s ease infinite;
         }
-        #emulator-container {
+        #game {
             width: 100%;
             height: 100%;
-        }
-        #emulator-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
         }
     </style>
 </head>
@@ -129,8 +124,8 @@
                             <div id="loading-screen" class="absolute inset-0 flex items-center justify-center bg-black/90 z-20 hidden">
                                 <div class="text-center">
                                     <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
-                                    <p class="text-lg" id="loading-text">Loading ROM...</p>
-                                    <p class="text-sm text-slate-400 mt-2">This may take a moment</p>
+                                    <p class="text-lg" id="loading-text">Loading Emulator...</p>
+                                    <p class="text-sm text-slate-400 mt-2">Please wait...</p>
                                 </div>
                             </div>
 
@@ -145,7 +140,7 @@
                                 </div>
                             </div>
                             
-                            <div id="emulator-container" class="w-full h-full"></div>
+                            <div id="game"></div>
                             
                             <div id="no-rom-screen" class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div class="text-center">
@@ -185,12 +180,6 @@
                                         <polyline points="7 3 7 8 15 8"></polyline>
                                     </svg>
                                 </button>
-                                <button id="mute-btn" disabled class="p-2 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 rounded-lg transition-colors" title="Mute">
-                                    <svg id="volume-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                                    </svg>
-                                </button>
                                 <button id="fullscreen-btn" disabled class="p-2 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 rounded-lg transition-colors" title="Fullscreen">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
@@ -207,12 +196,11 @@
                                     <p class="text-slate-400">Size: <span id="rom-size" class="text-white"></span></p>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400">
-                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
                                     </svg>
-                                    <span class="text-slate-400">N64 Core Active</span>
+                                    <span class="text-green-400">Running</span>
                                 </div>
                             </div>
                         </div>
@@ -231,18 +219,17 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                             <div>
                                 <p class="text-slate-400 mb-1">D-Pad: <span class="text-white font-mono">Arrow Keys</span></p>
-                                <p class="text-slate-400 mb-1">A Button: <span class="text-white font-mono">X / A</span></p>
-                                <p class="text-slate-400 mb-1">B Button: <span class="text-white font-mono">Z / S</span></p>
+                                <p class="text-slate-400 mb-1">A Button: <span class="text-white font-mono">X</span></p>
+                                <p class="text-slate-400 mb-1">B Button: <span class="text-white font-mono">C</span></p>
                             </div>
                             <div>
                                 <p class="text-slate-400 mb-1">Start: <span class="text-white font-mono">Enter</span></p>
-                                <p class="text-slate-400 mb-1">L/R: <span class="text-white font-mono">Q / W</span></p>
-                                <p class="text-slate-400 mb-1">Z Trigger: <span class="text-white font-mono">Shift</span></p>
+                                <p class="text-slate-400 mb-1">L/R: <span class="text-white font-mono">A / S</span></p>
+                                <p class="text-slate-400 mb-1">Z Trigger: <span class="text-white font-mono">Z</span></p>
                             </div>
                             <div>
-                                <p class="text-slate-400 mb-1">C-Up: <span class="text-white font-mono">I</span></p>
-                                <p class="text-slate-400 mb-1">C-Down: <span class="text-white font-mono">K</span></p>
-                                <p class="text-slate-400 mb-1">C-Left/Right: <span class="text-white font-mono">J / L</span></p>
+                                <p class="text-slate-400 mb-1">C-Buttons: <span class="text-white font-mono">T/F/G/H</span></p>
+                                <p class="text-slate-400 mb-1">Analog: <span class="text-white font-mono">WASD</span></p>
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-slate-700">
@@ -268,16 +255,6 @@
                                 <p class="text-xs text-slate-500 mt-1">.n64, .z64, .v64</p>
                             </div>
                         </label>
-                    </div>
-
-                    <!-- Save States -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
-                        <h3 class="text-lg font-semibold mb-4">Save States</h3>
-                        <div id="save-states-list" class="space-y-2">
-                            <div class="text-center text-slate-500 text-sm py-4">
-                                Load a game to use save states
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Recent Games -->
@@ -560,30 +537,23 @@
         </div>
     </footer>
 
-    <!-- EmulatorJS Script -->
-    <script src="https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/loader.js"></script>
-
     <!-- Main JavaScript -->
     <script>
         // State management
         let currentRom = null;
         let isPlaying = false;
-        let isMuted = false;
         let recentGames = JSON.parse(localStorage.getItem('recentGames') || '[]');
-        let saveStates = JSON.parse(localStorage.getItem('saveStates') || '{}');
 
         // DOM elements
         const romUpload = document.getElementById('rom-upload');
         const playBtn = document.getElementById('play-btn');
         const resetBtn = document.getElementById('reset-btn');
         const saveBtn = document.getElementById('save-btn');
-        const muteBtn = document.getElementById('mute-btn');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
         const loadingScreen = document.getElementById('loading-screen');
         const errorScreen = document.getElementById('error-screen');
         const noRomScreen = document.getElementById('no-rom-screen');
         const gameInfo = document.getElementById('game-info');
-        const emulatorContainer = document.getElementById('emulator-container');
 
         // File upload handler
         romUpload.addEventListener('change', async (e) => {
@@ -603,19 +573,22 @@
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
+                const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+                const romUrl = URL.createObjectURL(blob);
+                
                 currentRom = {
                     name: file.name.replace(/\.[^/.]+$/, ""),
                     file: file,
-                    data: arrayBuffer,
                     timestamp: Date.now(),
-                    size: file.size
+                    size: file.size,
+                    url: romUrl
                 };
 
                 // Add to recent games
                 addToRecentGames(currentRom);
                 
                 // Initialize emulator
-                await initializeEmulator(arrayBuffer, currentRom.name);
+                await initializeEmulator(romUrl, currentRom.name);
 
                 // Update UI
                 updateGameInfo();
@@ -631,34 +604,40 @@
         });
 
         // Initialize EmulatorJS
-        async function initializeEmulator(romData, romName) {
+        async function initializeEmulator(romUrl, romName) {
             try {
-                // Clear previous instance
-                emulatorContainer.innerHTML = '';
-
-                // Create blob URL for ROM
-                const blob = new Blob([romData], { type: 'application/octet-stream' });
-                const romUrl = URL.createObjectURL(blob);
-
-                // Configure EmulatorJS
-                window.EJS_player = '#emulator-container';
+                // Set global configuration
+                window.EJS_player = '#game';
                 window.EJS_core = 'n64';
                 window.EJS_gameUrl = romUrl;
                 window.EJS_pathtodata = 'https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/';
                 window.EJS_startOnLoaded = true;
-                window.EJS_biosUrl = '';
-                window.EJS_gameID = romName;
+                
+                // Optional settings
                 window.EJS_color = '#6366f1';
-                window.EJS_volume = isMuted ? 0 : 1;
+                window.EJS_VirtualGamepadSettings = { opacity: 0.8 };
+                window.EJS_backgroundImage = '';
+                window.EJS_gameID = romName;
 
-                // Reload EmulatorJS
+                // Clear and reload
+                const gameDiv = document.getElementById('game');
+                gameDiv.innerHTML = '';
+
+                // Dynamically load EmulatorJS
                 const script = document.createElement('script');
                 script.src = 'https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/loader.js';
                 script.onload = () => {
-                    console.log('Emulator initialized for:', romName);
+                    console.log('✓ Emulator loaded successfully');
                     isPlaying = true;
-                    updatePlayButton();
+                    setTimeout(() => {
+                        showLoading(false);
+                    }, 2000);
                 };
+                script.onerror = () => {
+                    showError('Failed to load emulator core');
+                    showLoading(false);
+                };
+                
                 document.body.appendChild(script);
 
             } catch (error) {
@@ -666,35 +645,21 @@
             }
         }
 
-        // Play/Pause toggle
-        playBtn.addEventListener('click', () => {
-            isPlaying = !isPlaying;
-            updatePlayButton();
-        });
-
         // Reset game
         resetBtn.addEventListener('click', () => {
-            if (currentRom) {
-                initializeEmulator(currentRom.data, currentRom.name);
+            if (currentRom && currentRom.url) {
+                showLoading(true);
+                initializeEmulator(currentRom.url, currentRom.name);
             }
-        });
-
-        // Save state
-        saveBtn.addEventListener('click', () => {
-            if (!currentRom || !isPlaying) return;
-            saveGameState(1);
-        });
-
-        // Mute toggle
-        muteBtn.addEventListener('click', () => {
-            isMuted = !isMuted;
-            updateMuteButton();
         });
 
         // Fullscreen
         fullscreenBtn.addEventListener('click', () => {
+            const gameContainer = document.getElementById('game').parentElement;
             if (!document.fullscreenElement) {
-                emulatorContainer.parentElement.requestFullscreen();
+                gameContainer.requestFullscreen().catch(err => {
+                    console.error('Fullscreen error:', err);
+                });
             } else {
                 document.exitFullscreen();
             }
@@ -714,6 +679,8 @@
             errorScreen.classList.add('hidden');
         }
 
+        window.hideError = hideError;
+
         function hideNoRomScreen() {
             noRomScreen.classList.add('hidden');
         }
@@ -730,38 +697,18 @@
             playBtn.disabled = false;
             resetBtn.disabled = false;
             saveBtn.disabled = false;
-            muteBtn.disabled = false;
             fullscreenBtn.disabled = false;
         }
 
-        function updatePlayButton() {
-            const icon = document.getElementById('play-icon');
-            const text = document.getElementById('play-text');
-            if (isPlaying) {
-                icon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
-                text.textContent = 'Pause';
-            } else {
-                icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
-                text.textContent = 'Play';
-            }
-        }
-
-        function updateMuteButton() {
-            const icon = document.getElementById('volume-icon');
-            if (isMuted) {
-                icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>';
-            } else {
-                icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>';
-            }
-        }
-
         function addToRecentGames(game) {
-            recentGames = [game, ...recentGames.filter(g => g.name !== game.name)].slice(0, 6);
-            localStorage.setItem('recentGames', JSON.stringify(recentGames.map(g => ({
-                name: g.name,
-                timestamp: g.timestamp,
-                size: g.size
-            }))));
+            const gameData = {
+                name: game.name,
+                timestamp: game.timestamp,
+                size: game.size
+            };
+            
+            recentGames = [gameData, ...recentGames.filter(g => g.name !== game.name)].slice(0, 6);
+            localStorage.setItem('recentGames', JSON.stringify(recentGames));
             renderRecentGames();
         }
 
@@ -775,31 +722,15 @@
             }
 
             container.classList.remove('hidden');
-            list.innerHTML = recentGames.map((game, idx) => `
-                <button onclick="loadRecentGame(${idx})" class="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors">
+            list.innerHTML = recentGames.map((game) => `
+                <div class="w-full text-left p-3 bg-slate-700/50 rounded-lg">
                     <p class="font-medium text-sm truncate">${game.name}</p>
                     <div class="flex justify-between items-center mt-1">
                         <p class="text-xs text-slate-400">${new Date(game.timestamp).toLocaleDateString()}</p>
                         <p class="text-xs text-slate-500">${(game.size / 1024 / 1024).toFixed(1)} MB</p>
                     </div>
-                </button>
+                </div>
             `).join('');
-        }
-
-        function saveGameState(slot) {
-            if (!currentRom) return;
-
-            const saveData = {
-                slot,
-                timestamp: Date.now(),
-                gameName: currentRom.name
-            };
-
-            const key = `${currentRom.name}_slot_${slot}`;
-            saveStates[key] = saveData;
-            localStorage.setItem('saveStates', JSON.stringify(saveStates));
-            
-            console.log(`Saved state to slot ${slot}`);
         }
 
         // Smooth scrolling for anchor links
@@ -813,15 +744,9 @@
             });
         });
 
-        // Mobile menu toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        mobileMenuBtn.addEventListener('click', () => {
-            // Add mobile menu logic here if needed
-        });
-
         // Initialize
         renderRecentGames();
-        console.log('N64 Emulator ready!');
+        console.log('✓ N64 Emulator ready!');
     </script>
 </body>
 </html>
