@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N64 Web Emulator - Play Nintendo 64 Games in Your Browser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .gradient-animation {
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+        }
+        #emulator-container {
+            width: 100%;
+            height: 100%;
+        }
+        #emulator-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 12h4"></path>
+                            <path d="M14 8v8"></path>
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        N64 Emulator
+                    </span>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#home" class="hover:text-blue-400 transition-colors">Home</a>
+                    <a href="#emulator" class="hover:text-blue-400 transition-colors">Play Now</a>
+                    <a href="#library" class="hover:text-blue-400 transition-colors">Game Library</a>
+                    <a href="#features" class="hover:text-blue-400 transition-colors">Features</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        <div class="absolute inset-0 gradient-animation bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+        
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 overflow-hidden opacity-20">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl float-animation"></div>
+            <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl float-animation" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl float-animation" style="animation-delay: 2s;"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Nintendo 64 in Your Browser
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
+                Experience classic N64 games with our powerful WebAssembly emulator. No downloads, no installation. Just pure nostalgia.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#emulator" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105">
+                    Start Playing Now
+                </a>
+                <a href="#features" class="px-8 py-4 bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg text-lg font-semibold hover:bg-slate-700/50 transition-all">
+                    Learn More
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">60 FPS</div>
+                    <div class="text-sm text-slate-400 mt-1">Smooth Performance</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-purple-400">100%</div>
+                    <div class="text-sm text-slate-400 mt-1">Browser-Based</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-pink-400">Free</div>
+                    <div class="text-sm text-slate-400 mt-1">Forever</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emulator Section -->
+    <section id="emulator" class="min-h-screen py-20 bg-gradient-to-b from-slate-900 to-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Play Now</h2>
+                <p class="text-xl text-slate-400">Upload your ROM and start playing instantly</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Emulator -->
+                <div class="lg:col-span-2">
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                        <!-- Emulator Screen -->
+                        <div class="aspect-[4/3] bg-black rounded-lg mb-4 relative overflow-hidden">
+                            <div id="loading-screen" class="absolute inset-0 flex items-center justify-center bg-black/90 z-20 hidden">
+                                <div class="text-center">
+                                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+                                    <p class="text-lg" id="loading-text">Loading ROM...</p>
+                                    <p class="text-sm text-slate-400 mt-2">This may take a moment</p>
+                                </div>
+                            </div>
+
+                            <div id="error-screen" class="absolute inset-0 flex items-center justify-center bg-black/90 z-20 hidden">
+                                <div class="text-center max-w-md p-6">
+                                    <div class="text-red-500 text-5xl mb-4">⚠️</div>
+                                    <p class="text-lg text-red-400 mb-2">Emulator Error</p>
+                                    <p class="text-sm text-slate-400" id="error-message"></p>
+                                    <button onclick="hideError()" class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                        Dismiss
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="emulator-container" class="w-full h-full"></div>
+                            
+                            <div id="no-rom-screen" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-slate-600">
+                                        <path d="M6 12h4"></path>
+                                        <path d="M14 8v8"></path>
+                                        <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                                    </svg>
+                                    <p class="text-xl text-slate-400 mb-2">No ROM loaded</p>
+                                    <p class="text-sm text-slate-500">Upload a .z64, .n64, or .v64 file to begin</p>
+                                    <p class="text-xs text-slate-600 mt-4">Supports games like Super Mario 64, Zelda OoT, etc.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="flex items-center justify-between gap-4 flex-wrap">
+                            <div class="flex gap-2">
+                                <button id="play-btn" disabled class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-500 rounded-lg transition-colors">
+                                    <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                    </svg>
+                                    <span id="play-text">Play</span>
+                                </button>
+                                <button id="reset-btn" disabled class="p-2 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-600 rounded-lg transition-colors" title="Reset">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="flex gap-2 items-center">
+                                <button id="save-btn" disabled class="p-2 bg-green-700 hover:bg-green-600 disabled:bg-slate-800 disabled:text-slate-600 rounded-lg transition-colors" title="Quick Save">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                        <polyline points="7 3 7 8 15 8"></polyline>
+                                    </svg>
+                                </button>
+                                <button id="mute-btn" disabled class="p-2 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 rounded-lg transition-colors" title="Mute">
+                                    <svg id="volume-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                    </svg>
+                                </button>
+                                <button id="fullscreen-btn" disabled class="p-2 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 rounded-lg transition-colors" title="Fullscreen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Game Info -->
+                        <div id="game-info" class="mt-4 p-4 bg-slate-700/30 rounded-lg hidden">
+                            <div class="flex items-center justify-between text-sm">
+                                <div>
+                                    <p class="text-slate-400">ROM: <span id="rom-name" class="text-white font-mono"></span></p>
+                                    <p class="text-slate-400">Size: <span id="rom-size" class="text-white"></span></p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                                    </svg>
+                                    <span class="text-slate-400">N64 Core Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls Info -->
+                    <div class="mt-6 bg-slate-800/30 backdrop-blur-sm rounded-xl p-6 border border-slate-700/30">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
+                                <path d="M6 12h4"></path>
+                                <path d="M14 8v8"></path>
+                                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            </svg>
+                            Keyboard Controls
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <p class="text-slate-400 mb-1">D-Pad: <span class="text-white font-mono">Arrow Keys</span></p>
+                                <p class="text-slate-400 mb-1">A Button: <span class="text-white font-mono">X / A</span></p>
+                                <p class="text-slate-400 mb-1">B Button: <span class="text-white font-mono">Z / S</span></p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1">Start: <span class="text-white font-mono">Enter</span></p>
+                                <p class="text-slate-400 mb-1">L/R: <span class="text-white font-mono">Q / W</span></p>
+                                <p class="text-slate-400 mb-1">Z Trigger: <span class="text-white font-mono">Shift</span></p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1">C-Up: <span class="text-white font-mono">I</span></p>
+                                <p class="text-slate-400 mb-1">C-Down: <span class="text-white font-mono">K</span></p>
+                                <p class="text-slate-400 mb-1">C-Left/Right: <span class="text-white font-mono">J / L</span></p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-xs text-slate-500">💡 Touch controls available on mobile devices | USB gamepads supported</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Upload ROM -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                        <h3 class="text-lg font-semibold mb-4">Load ROM</h3>
+                        <label class="block">
+                            <input type="file" id="rom-upload" accept=".n64,.z64,.v64,.rom" class="hidden">
+                            <div class="border-2 border-dashed border-slate-600 hover:border-blue-500 rounded-lg p-6 text-center cursor-pointer transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-2 text-slate-400">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <p class="text-sm text-slate-400">Click to upload ROM</p>
+                                <p class="text-xs text-slate-500 mt-1">.n64, .z64, .v64</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Save States -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                        <h3 class="text-lg font-semibold mb-4">Save States</h3>
+                        <div id="save-states-list" class="space-y-2">
+                            <div class="text-center text-slate-500 text-sm py-4">
+                                Load a game to use save states
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Games -->
+                    <div id="recent-games-container" class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Recent Games</h3>
+                        <div id="recent-games-list" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="bg-gradient-to-br from-blue-900/20 to-purple-900/20 backdrop-blur-sm rounded-xl p-6 border border-blue-500/30">
+                        <h3 class="text-lg font-semibold mb-2">About</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                            Full Nintendo 64 emulator powered by EmulatorJS. Runs actual N64 ROMs including Super Mario 64, Zelda OoT, Mario Kart 64, and more.
+                        </p>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <p>✓ WebAssembly-based emulation</p>
+                            <p>✓ Save state support</p>
+                            <p>✓ Full controller mapping</p>
+                            <p>✓ Mobile touch controls</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Library Section -->
+    <section id="library" class="py-20 bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Compatible Games</h2>
+                <p class="text-xl text-slate-400">These games are known to work perfectly</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Game Card 1 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all transform hover:scale-105">
+                    <div class="aspect-square bg-gradient-to-br from-red-500 to-red-700 rounded-lg mb-4 flex items-center justify-center">
+                        <span class="text-6xl">🍄</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Super Mario 64</h3>
+                    <p class="text-sm text-slate-400 mb-3">The iconic 3D platformer that defined a generation</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-600/20 text-blue-400 rounded">Platformer</span>
+                        <span class="px-2 py-1 bg-green-600/20 text-green-400 rounded">✓ Compatible</span>
+                    </div>
+                </div>
+
+                <!-- Game Card 2 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all transform hover:scale-105">
+                    <div class="aspect-square bg-gradient-to-br from-green-500 to-green-700 rounded-lg mb-4 flex items-center justify-center">
+                        <span class="text-6xl">⚔️</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Zelda: Ocarina of Time</h3>
+                    <p class="text-sm text-slate-400 mb-3">Epic adventure through Hyrule</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="px-2 py-1 bg-purple-600/20 text-purple-400 rounded">Adventure</span>
+                        <span class="px-2 py-1 bg-green-600/20 text-green-400 rounded">✓ Compatible</span>
+                    </div>
+                </div>
+
+                <!-- Game Card 3 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all transform hover:scale-105">
+                    <div class="aspect-square bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg mb-4 flex items-center justify-center">
+                        <span class="text-6xl">🏎️</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Mario Kart 64</h3>
+                    <p class="text-sm text-slate-400 mb-3">Classic kart racing mayhem</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="px-2 py-1 bg-red-600/20 text-red-400 rounded">Racing</span>
+                        <span class="px-2 py-1 bg-green-600/20 text-green-400 rounded">✓ Compatible</span>
+                    </div>
+                </div>
+
+                <!-- Game Card 4 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all transform hover:scale-105">
+                    <div class="aspect-square bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-lg mb-4 flex items-center justify-center">
+                        <span class="text-6xl">⭐</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Banjo-Kazooie</h3>
+                    <p class="text-sm text-slate-400 mb-3">Collect jiggies in this platforming classic</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-600/20 text-blue-400 rounded">Platformer</span>
+                        <span class="px-2 py-1 bg-green-600/20 text-green-400 rounded">✓ Compatible</span>
+                    </div>
+                </div>
+
+                <!-- Game Card 5 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all transform hover:scale-105">
+                    <div class="aspect-square bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg mb-4 flex items-center justify-center">
+                        <span class="text-6xl">👻</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Zelda: Majora's Mask</h3>
+                    <p class="text-sm text-slate-400 mb-3">Dark sequel with time-bending mechanics</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="px-2 py-1 bg-purple-600/20 text-purple-400 rounded">Adventure</span>
+                        <span class="px-2 py-1 bg-green-600/20 text-green-400 rounded">✓ Compatible</span>
+                    </div>
+                </div>
+
+                <!-- Game Card 6 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all transform hover:scale-105">
+                    <div class="aspect-square bg-gradient-to-br from-orange-500 to-orange-700 rounded-lg mb-4 flex items-center justify-center">
+                        <span class="text-6xl">🦊</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Star Fox 64</h3>
+                    <p class="text-sm text-slate-400 mb-3">Do a barrel roll in space</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="px-2 py-1 bg-indigo-600/20 text-indigo-400 rounded">Shooter</span>
+                        <span class="px-2 py-1 bg-green-600/20 text-green-400 rounded">✓ Compatible</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gradient-to-b from-slate-800 to-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Powerful Features</h2>
+                <p class="text-xl text-slate-400">Everything you need for the perfect retro gaming experience</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Feature 1 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">60 FPS Performance</h3>
+                    <p class="text-sm text-slate-400">Smooth gameplay at full speed with WebAssembly acceleration</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Save States</h3>
+                    <p class="text-sm text-slate-400">Save and load your progress at any point in the game</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+                            <path d="M6 12h4"></path>
+                            <path d="M14 8v8"></path>
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Controller Support</h3>
+                    <p class="text-sm text-slate-400">Use keyboard or connect USB gamepads for authentic feel</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-pink-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Mobile Friendly</h3>
+                    <p class="text-sm text-slate-400">Touch controls automatically enabled on phones and tablets</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-yellow-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Fullscreen Mode</h3>
+                    <p class="text-sm text-slate-400">Immersive fullscreen gaming experience</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-indigo-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">No Installation</h3>
+                    <p class="text-sm text-slate-400">100% browser-based, start playing in seconds</p>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-red-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Audio Support</h3>
+                    <p class="text-sm text-slate-400">Full sound emulation with volume controls</p>
+                </div>
+
+                <!-- Feature 8 -->
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-teal-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-400">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Privacy First</h3>
+                    <p class="text-sm text-slate-400">Your ROMs stay in your browser, never uploaded</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-slate-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="space-y-4">
+                <details class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <summary class="font-semibold cursor-pointer">How do I get ROM files?</summary>
+                    <p class="mt-3 text-slate-400 text-sm">You must provide your own legally obtained ROM files. We cannot provide ROMs. You can create backups of games you own using specialized hardware.</p>
+                </details>
+
+                <details class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <summary class="font-semibold cursor-pointer">Is this legal?</summary>
+                    <p class="mt-3 text-slate-400 text-sm">Emulators are legal. However, downloading ROMs of games you don't own is illegal. Only use ROMs you've created from games you legally own.</p>
+                </details>
+
+                <details class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <summary class="font-semibold cursor-pointer">What browsers are supported?</summary>
+                    <p class="mt-3 text-slate-400 text-sm">Works best on Chrome, Edge, Firefox, and Safari. Requires WebAssembly support (available in all modern browsers).</p>
+                </details>
+
+                <details class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <summary class="font-semibold cursor-pointer">Can I use a real controller?</summary>
+                    <p class="mt-3 text-slate-400 text-sm">Yes! USB controllers are automatically detected. Xbox, PlayStation, and many third-party controllers work great.</p>
+                </details>
+
+                <details class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
+                    <summary class="font-semibold cursor-pointer">Are my saves stored?</summary>
+                    <p class="mt-3 text-slate-400 text-sm">Save states are stored in your browser's local storage. They persist between sessions but are cleared if you clear browser data.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 12h4"></path>
+                            <path d="M14 8v8"></path>
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        N64 Emulator
+                    </span>
+                </div>
+                <div class="text-center text-sm text-slate-400">
+                    <p>Educational purposes only. Nintendo 64 and all game titles are trademarks of Nintendo.</p>
+                    <p class="mt-2">© 2024 N64 Web Emulator. Powered by EmulatorJS.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- EmulatorJS Script -->
+    <script src="https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/loader.js"></script>
+
+    <!-- Main JavaScript -->
+    <script>
+        // State management
+        let currentRom = null;
+        let isPlaying = false;
+        let isMuted = false;
+        let recentGames = JSON.parse(localStorage.getItem('recentGames') || '[]');
+        let saveStates = JSON.parse(localStorage.getItem('saveStates') || '{}');
+
+        // DOM elements
+        const romUpload = document.getElementById('rom-upload');
+        const playBtn = document.getElementById('play-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const muteBtn = document.getElementById('mute-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const loadingScreen = document.getElementById('loading-screen');
+        const errorScreen = document.getElementById('error-screen');
+        const noRomScreen = document.getElementById('no-rom-screen');
+        const gameInfo = document.getElementById('game-info');
+        const emulatorContainer = document.getElementById('emulator-container');
+
+        // File upload handler
+        romUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const validExtensions = ['.n64', '.z64', '.v64', '.rom'];
+            const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+            if (!validExtensions.includes(fileExtension)) {
+                showError('Invalid file format. Please upload a .n64, .z64, or .v64 file');
+                return;
+            }
+
+            showLoading(true);
+            hideError();
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                currentRom = {
+                    name: file.name.replace(/\.[^/.]+$/, ""),
+                    file: file,
+                    data: arrayBuffer,
+                    timestamp: Date.now(),
+                    size: file.size
+                };
+
+                // Add to recent games
+                addToRecentGames(currentRom);
+                
+                // Initialize emulator
+                await initializeEmulator(arrayBuffer, currentRom.name);
+
+                // Update UI
+                updateGameInfo();
+                enableControls();
+                hideNoRomScreen();
+
+            } catch (error) {
+                console.error('Failed to load ROM:', error);
+                showError('Failed to load ROM file: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        // Initialize EmulatorJS
+        async function initializeEmulator(romData, romName) {
+            try {
+                // Clear previous instance
+                emulatorContainer.innerHTML = '';
+
+                // Create blob URL for ROM
+                const blob = new Blob([romData], { type: 'application/octet-stream' });
+                const romUrl = URL.createObjectURL(blob);
+
+                // Configure EmulatorJS
+                window.EJS_player = '#emulator-container';
+                window.EJS_core = 'n64';
+                window.EJS_gameUrl = romUrl;
+                window.EJS_pathtodata = 'https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/';
+                window.EJS_startOnLoaded = true;
+                window.EJS_biosUrl = '';
+                window.EJS_gameID = romName;
+                window.EJS_color = '#6366f1';
+                window.EJS_volume = isMuted ? 0 : 1;
+
+                // Reload EmulatorJS
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/loader.js';
+                script.onload = () => {
+                    console.log('Emulator initialized for:', romName);
+                    isPlaying = true;
+                    updatePlayButton();
+                };
+                document.body.appendChild(script);
+
+            } catch (error) {
+                throw new Error('Failed to initialize emulator: ' + error.message);
+            }
+        }
+
+        // Play/Pause toggle
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            updatePlayButton();
+        });
+
+        // Reset game
+        resetBtn.addEventListener('click', () => {
+            if (currentRom) {
+                initializeEmulator(currentRom.data, currentRom.name);
+            }
+        });
+
+        // Save state
+        saveBtn.addEventListener('click', () => {
+            if (!currentRom || !isPlaying) return;
+            saveGameState(1);
+        });
+
+        // Mute toggle
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            updateMuteButton();
+        });
+
+        // Fullscreen
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                emulatorContainer.parentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        // Helper functions
+        function showLoading(show) {
+            loadingScreen.classList.toggle('hidden', !show);
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            errorScreen.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorScreen.classList.add('hidden');
+        }
+
+        function hideNoRomScreen() {
+            noRomScreen.classList.add('hidden');
+        }
+
+        function updateGameInfo() {
+            if (currentRom) {
+                document.getElementById('rom-name').textContent = currentRom.name;
+                document.getElementById('rom-size').textContent = (currentRom.size / 1024 / 1024).toFixed(2) + ' MB';
+                gameInfo.classList.remove('hidden');
+            }
+        }
+
+        function enableControls() {
+            playBtn.disabled = false;
+            resetBtn.disabled = false;
+            saveBtn.disabled = false;
+            muteBtn.disabled = false;
+            fullscreenBtn.disabled = false;
+        }
+
+        function updatePlayButton() {
+            const icon = document.getElementById('play-icon');
+            const text = document.getElementById('play-text');
+            if (isPlaying) {
+                icon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+                text.textContent = 'Pause';
+            } else {
+                icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+                text.textContent = 'Play';
+            }
+        }
+
+        function updateMuteButton() {
+            const icon = document.getElementById('volume-icon');
+            if (isMuted) {
+                icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>';
+            } else {
+                icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>';
+            }
+        }
+
+        function addToRecentGames(game) {
+            recentGames = [game, ...recentGames.filter(g => g.name !== game.name)].slice(0, 6);
+            localStorage.setItem('recentGames', JSON.stringify(recentGames.map(g => ({
+                name: g.name,
+                timestamp: g.timestamp,
+                size: g.size
+            }))));
+            renderRecentGames();
+        }
+
+        function renderRecentGames() {
+            const container = document.getElementById('recent-games-container');
+            const list = document.getElementById('recent-games-list');
+            
+            if (recentGames.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            list.innerHTML = recentGames.map((game, idx) => `
+                <button onclick="loadRecentGame(${idx})" class="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors">
+                    <p class="font-medium text-sm truncate">${game.name}</p>
+                    <div class="flex justify-between items-center mt-1">
+                        <p class="text-xs text-slate-400">${new Date(game.timestamp).toLocaleDateString()}</p>
+                        <p class="text-xs text-slate-500">${(game.size / 1024 / 1024).toFixed(1)} MB</p>
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        function saveGameState(slot) {
+            if (!currentRom) return;
+
+            const saveData = {
+                slot,
+                timestamp: Date.now(),
+                gameName: currentRom.name
+            };
+
+            const key = `${currentRom.name}_slot_${slot}`;
+            saveStates[key] = saveData;
+            localStorage.setItem('saveStates', JSON.stringify(saveStates));
+            
+            console.log(`Saved state to slot ${slot}`);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        mobileMenuBtn.addEventListener('click', () => {
+            // Add mobile menu logic here if needed
+        });
+
+        // Initialize
+        renderRecentGames();
+        console.log('N64 Emulator ready!');
+    </script>
+</body>
+</html>
